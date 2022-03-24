@@ -14,6 +14,8 @@ type BitwardenClient interface {
 	GetItems(folder string) (Items, error)
 	GetItem(itemID string) (Item, error)
 	FindItem(name string) (string, error)
+	GetPassword(itemID string) (string, error)
+	GetTOTP(itemID string) (string, error)
 }
 
 type bitwardenClient struct {
@@ -132,4 +134,50 @@ func (r *bitwardenClient) FindItem(name string) (string, error) {
 		}
 	}
 	return "", nil
+}
+
+func (r *bitwardenClient) GetPassword(itemID string) (string, error) {
+
+	// TODO: detect if there are no options passed in, ? verus & for page option
+	fetchUri := fmt.Sprintf("http://localhost:%s/object/password/%s", r.Port, itemID)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		Get(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return "", resperr
+	}
+
+	var pw Password
+	marshErr := json.Unmarshal(resp.Body(), &pw)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return "", resperr
+	}
+
+	return pw.Data.Data, nil
+}
+
+func (r *bitwardenClient) GetTOTP(itemID string) (string, error) {
+
+	// TODO: detect if there are no options passed in, ? verus & for page option
+	fetchUri := fmt.Sprintf("http://localhost:%s/object/totp/%s", r.Port, itemID)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		Get(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return "", resperr
+	}
+
+	var totp Totp
+	marshErr := json.Unmarshal(resp.Body(), &totp)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return "", resperr
+	}
+
+	return totp.Data.Data, nil
 }

@@ -124,15 +124,35 @@ type ItemData struct {
 }
 
 type ItemDataLogin struct {
-	Password             string      `json:"password"`
-	PasswordRevisionDate string      `json:"passwordRevisionDate"`
-	Totp                 interface{} `json:"totp"`
-	Username             string      `json:"username"`
+	Password             string `json:"password"`
+	PasswordRevisionDate string `json:"passwordRevisionDate"`
+	Totp                 string `json:"totp"`
+	Username             string `json:"username"`
 }
 
 type ItemDataPasswordHistory struct {
 	LastUsedDate string `json:"lastUsedDate"`
 	Password     string `json:"password"`
+}
+
+type Totp struct {
+	Data    TotpData `json:"data"`
+	Success bool     `json:"success"`
+}
+
+type TotpData struct {
+	Data   string `json:"data"`
+	Object string `json:"object"`
+}
+
+type Password struct {
+	Data    PasswordData `json:"data"`
+	Success bool         `json:"success"`
+}
+
+type PasswordData struct {
+	Data   string `json:"data"`
+	Object string `json:"object"`
 }
 
 // ToJSON - Write the output as JSON
