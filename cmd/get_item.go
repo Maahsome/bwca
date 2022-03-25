@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// itemCmd represents the item command
-var itemCmd = &cobra.Command{
+// getItemCmd represents the item command
+var getItemCmd = &cobra.Command{
 	Use:   "item",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -22,6 +22,10 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		itemID, _ := cmd.Flags().GetString("item-id")
 		itemName, _ := cmd.Flags().GetString("item-name")
+
+		if !c.FormatOverridden {
+			c.OutputFormat = "json"
+		}
 		if len(itemName) > 0 {
 			itemID = getItemID(itemName)
 		}
@@ -69,7 +73,7 @@ func itemDataToString(itemData bitwarden.Item, raw string) string {
 }
 
 func init() {
-	getCmd.AddCommand(itemCmd)
-	itemCmd.Flags().StringP("item-id", "i", "", "The ID of the item to fetch")
-	itemCmd.Flags().StringP("item-name", "n", "", "The name of the item to fetch, careful: name items wisely")
+	getCmd.AddCommand(getItemCmd)
+	getItemCmd.Flags().StringP("item-id", "i", "", "The ID of the item to fetch")
+	getItemCmd.Flags().StringP("item-name", "n", "", "The name of the item to fetch, careful: name items wisely")
 }

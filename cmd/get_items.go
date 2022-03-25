@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// itemsCmd represents the items command
-var itemsCmd = &cobra.Command{
+// getItemsCmd represents the items command
+var getItemsCmd = &cobra.Command{
 	Use:   "items",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -51,5 +51,5 @@ func itemsDataToString(itemData bitwarden.Items, raw string) string {
 }
 
 func init() {
-	getCmd.AddCommand(itemsCmd)
+	getCmd.AddCommand(getItemsCmd)
 }

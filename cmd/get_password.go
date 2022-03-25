@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// passwordCmd represents the password command
-var passwordCmd = &cobra.Command{
+// getPasswordCmd represents the password command
+var getPasswordCmd = &cobra.Command{
 	Use:   "password",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -39,8 +39,8 @@ func getPassword(id string) {
 	fmt.Println(password)
 }
 func init() {
-	getCmd.AddCommand(passwordCmd)
+	getCmd.AddCommand(getPasswordCmd)
 
-	passwordCmd.Flags().StringP("item-id", "i", "", "The ID of the item to fetch")
-	passwordCmd.Flags().StringP("item-name", "n", "", "The name of the item to fetch, careful: name items wisely")
+	getPasswordCmd.Flags().StringP("item-id", "i", "", "The ID of the item to fetch")
+	getPasswordCmd.Flags().StringP("item-name", "n", "", "The name of the item to fetch, careful: name items wisely")
 }
