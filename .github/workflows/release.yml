@@ -1,0 +1,47 @@
+name: goreleaser
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      -
+        name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+      -
+        name: Set RELEASE_TAG env
+        run: |
+          echo RELEASE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
+          echo "Move ./changelog/v0.0.0-NEXT.md to ./changelog/${GITHUB_REF}.md"
+          sed -i "s/^## v0.0.0-NEXT$/## ${GITHUB_REF}/" ./changelog/v0.0.0-NEXT.md
+          mv ./changelog/v0.0.0-NEXT.md ./changelog/${GITHUB_REF}.md
+          cp ./changelog/${CI_COMMIT_TAG}.md ../vRELEASE.md
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist --release-notes=changelog/${{ env.RELEASE_TAG }}.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAAHSOME_PAT: ${{ secrets.MAAHSOME_PAT }}
+      -
+        name: Commit ChangeLog
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: 'changelog/v0.0.0-NEXT.md'
+          add: "changelog/${RELEASE_TAG}.md"
+          committer_name: Christopher Maahs
+          committer_email: cmaahs@gmail.com
+          message: "Update Release ${RELEASE_TAG}.md changelog"
