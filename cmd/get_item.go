@@ -22,6 +22,10 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		itemID, _ := cmd.Flags().GetString("item-id")
 		itemName, _ := cmd.Flags().GetString("item-name")
+
+		if !c.FormatOverridden {
+			c.OutputFormat = "json"
+		}
 		if len(itemName) > 0 {
 			itemID = getItemID(itemName)
 		}

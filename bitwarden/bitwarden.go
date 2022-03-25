@@ -17,6 +17,7 @@ type BitwardenClient interface {
 	GetPassword(itemID string) (string, error)
 	GetTOTP(itemID string) (string, error)
 	NewItem(newlogin Newlogin) (ReturnStatus, error)
+	DeleteItem(itemID string) (bool, error)
 }
 
 type bitwardenClient struct {
@@ -192,5 +193,46 @@ func (r *bitwardenClient) NewItem(newlogin Newlogin) (ReturnStatus, error) {
 	}
 
 	fmt.Println(string(newLoginJSON[:]))
-	return ReturnStatus{}, nil
+
+	fetchUri := fmt.Sprintf("http://localhost:%s/object/item", r.Port)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(string(newLoginJSON[:])).
+		Post(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return ReturnStatus{}, resperr
+	}
+
+	var status ReturnStatus
+	marshErr := json.Unmarshal(resp.Body(), &status)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return ReturnStatus{}, resperr
+	}
+
+	return status, nil
+}
+
+func (r *bitwardenClient) DeleteItem(itemID string) (bool, error) {
+
+	fetchUri := fmt.Sprintf("http://localhost:%s/object/item/%s", r.Port, itemID)
+	resp, resperr := r.Client.R().
+		Delete(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return false, resperr
+	}
+
+	var success Success
+	marshErr := json.Unmarshal(resp.Body(), &success)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return false, resperr
+	}
+
+	return success.Success, nil
 }
