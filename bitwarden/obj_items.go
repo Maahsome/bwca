@@ -155,6 +155,38 @@ type PasswordData struct {
 	Object string `json:"object"`
 }
 
+type Newlogin struct {
+	CollectionID   string            `json:"collectionId"`
+	Favorite       bool              `json:"favorite"`
+	Fields         map[string]string `json:"fields"`
+	FolderID       string            `json:"folderId"`
+	Login          NewloginLogin     `json:"login"`
+	Name           string            `json:"name"`
+	Notes          string            `json:"notes"`
+	OrganizationID string            `json:"organizationId"`
+	Reprompt       bool              `json:"reprompt"`
+	Type           int               `json:"type"`
+}
+
+type NewloginLogin struct {
+	Password string             `json:"password"`
+	Totp     string             `json:"totp"`
+	Uris     []NewloginLoginURI `json:"uris"`
+	Username string             `json:"username"`
+}
+
+type NewloginLoginURI struct {
+	Match int    `json:"match"`
+	URI   string `json:"uri"`
+}
+
+type ReturnStatus struct {
+	Data         interface{} `json:"data"`
+	DeleteDate   string      `json:"deleteDate"`
+	RevisionDate string      `json:"revisionDate"`
+	Success      bool        `json:"success"`
+}
+
 // ToJSON - Write the output as JSON
 func (it *Items) ToJSON() string {
 	itJSON, err := json.MarshalIndent(it, "", "  ")

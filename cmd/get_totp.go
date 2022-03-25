@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// totpCmd represents the password command
-var totpCmd = &cobra.Command{
+// getTotpCmd represents the password command
+var getTotpCmd = &cobra.Command{
 	Use:   "totp",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
@@ -39,8 +39,8 @@ func getTotp(id string) {
 	fmt.Println(totp)
 }
 func init() {
-	getCmd.AddCommand(totpCmd)
+	getCmd.AddCommand(getTotpCmd)
 
-	totpCmd.Flags().StringP("item-id", "i", "", "The ID of the item to fetch")
-	totpCmd.Flags().StringP("item-name", "n", "", "The name of the item to fetch, careful: name items wisely")
+	getTotpCmd.Flags().StringP("item-id", "i", "", "The ID of the item to fetch")
+	getTotpCmd.Flags().StringP("item-name", "n", "", "The name of the item to fetch, careful: name items wisely")
 }

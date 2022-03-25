@@ -16,6 +16,7 @@ type BitwardenClient interface {
 	FindItem(name string) (string, error)
 	GetPassword(itemID string) (string, error)
 	GetTOTP(itemID string) (string, error)
+	NewItem(newlogin Newlogin) (ReturnStatus, error)
 }
 
 type bitwardenClient struct {
@@ -180,4 +181,16 @@ func (r *bitwardenClient) GetTOTP(itemID string) (string, error) {
 	}
 
 	return totp.Data.Data, nil
+}
+
+func (r *bitwardenClient) NewItem(newlogin Newlogin) (ReturnStatus, error) {
+
+	newLoginJSON, merr := json.Marshal(newlogin)
+	if merr != nil {
+		logrus.WithError(merr).Error("Oops")
+		return ReturnStatus{}, merr
+	}
+
+	fmt.Println(string(newLoginJSON[:]))
+	return ReturnStatus{}, nil
 }
