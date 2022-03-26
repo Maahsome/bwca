@@ -23,7 +23,7 @@ jobs:
         with:
           previous_tag: $PREVIOUS_TAG
           token: ${{ secrets.GITHUB_TOKEN }}
-          verbose_level: info
+          verbose_level: trace
           changelog_dir: changelog
       - 
         name: Get Artifact
