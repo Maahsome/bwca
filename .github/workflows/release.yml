@@ -65,7 +65,7 @@ jobs:
       -
         name: Place ChangeLog
         run: |
-          echo RELEASE_TAG=(cat ./vRELEASE.md | head -n 1 | awk '{print $2}') >> ${GITHUB_ENV}
+          echo RELEASE_TAG=$(cat ./vRELEASE.md | head -n 1 | awk '{print $2}') >> ${GITHUB_ENV}
           RELEASE_TAG=$(cat ./vRELEASE.md | head -n 1 | awk '{print $2}')
           echo "COPY ./vRELEASE.md to ./changelog/${RELEASE_TAG}.md"
           cp ./vRELEASE.md ./changelog/${RELEASE_TAG}.md
