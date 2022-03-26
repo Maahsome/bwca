@@ -77,9 +77,9 @@ jobs:
         name: Commit ChangeLog
         uses: EndBug/add-and-commit@v9
         with:
-          add: changelog/$RELEASE_TAG.md
-          remove: changelog/v0.0.0-NEXT.md
+          add: "changelog/${{ env.RELEASE_TAG }}.md"
+          remove: "changelog/v0.0.0-NEXT.md"
           committer_name: Christopher Maahs
           committer_email: cmaahs@gmail.com
-          message: Update Release ${RELEASE_TAG}.md changelog
+          message: "Update Release ${{ env.RELEASE_TAG }}.md ChangeLog"
 
