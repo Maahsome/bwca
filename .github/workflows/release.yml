@@ -11,7 +11,7 @@ jobs:
     steps:
       -
         name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       -
@@ -24,14 +24,49 @@ jobs:
         run: |
           echo RELEASE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
           RELEASE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev)
-          echo "Move ./changelog/v0.0.0-NEXT.md to ./changelog/${RELEASE_TAG}.md"
-          sed -i "s/^## v0.0.0-NEXT$/## ${RELEASE_TAG}/" ./changelog/v0.0.0-NEXT.md
-          cat ./changelog/v0.0.0-NEXT.md         
-          mv ./changelog/v0.0.0-NEXT.md ./changelog/${RELEASE_TAG}.md
+          echo "COPY ./changelog/v0.0.0-NEXT.md to ./vRELEASE.md"
+          cp ./changelog/v0.0.0-NEXT.md ./vRELEASE.md
+          sed -i "s/^## v0.0.0-NEXT$/## ${RELEASE_TAG}/" ./vRELEASE.md
       -
           name: CAT TAG File
           run: |
-            cat ./changelog/${RELEASE_TAG}.md
+            cat ./vRELEASE.md
+      -
+        name: 'Upload Artifact'
+        uses: actions/upload-artifact@v2
+        with:
+          name: vRELEASE
+          path: "vRELEASE.md"
+          retention-days: 1
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          version: latest
+          args: release --rm-dist --release-notes=vRELEASE.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAAHSOME_PAT: ${{ secrets.MAAHSOME_PAT }}
+  changelog:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+      - 
+        name: Get Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: vRELEASE
+      -
+        name: Place ChangeLog
+        run: |
+          echo "COPY ./vRELEASE.md to ./changelog/${RELEASE_TAG}.md"
+          cp ./vRELEASE.md ./changelog/${RELEASE_TAG}.md
+          rm ./changelog/v0.0.0-NEXT.md
       -
         name: Commit ChangeLog
         uses: EndBug/add-and-commit@v7
@@ -40,12 +75,4 @@ jobs:
           committer_name: Christopher Maahs
           committer_email: cmaahs@gmail.com
           message: "Update Release ${RELEASE_TAG}.md changelog"
-      -
-        name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          version: latest
-          args: release --rm-dist --release-notes=changelog/${{ env.RELEASE_TAG }}.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MAAHSOME_PAT: ${{ secrets.MAAHSOME_PAT }}
+
