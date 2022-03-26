@@ -16,12 +16,12 @@ jobs:
           fetch-depth: 0
       - 
         name: Set PREVIOUS TAG 
-        run: PREVIOUS_TAG=$(curl -Ls https://api.github.com/repos/maahsome/bwca/releases/latest | jq -r '.tag_name')
+        run: echo PREVIOUS_TAG=$(curl -Ls https://api.github.com/repos/maahsome/bwca/releases/latest | jq -r '.tag_name') >> ${GITHUB_ENV}
       -
         name: Run ChangeLog-PR
         uses: Maahsome/changelog-pr-action@v1.0
         with:
-          previous_tag: ${PREVIOUS_TAG}
+          previous_tag: $PREVIOUS_TAG
           token: ${{ secrets.GITHUB_TOKEN }}
           verbose_level: trace
           changelog_dir: changelog
