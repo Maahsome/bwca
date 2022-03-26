@@ -10,5 +10,5 @@ A new release is triggered by tagging the repository.  The pipeline runs a gorel
 
 vRELEASE.md is used to pass along the ChangeLog from Job to Job, it needs to remain in the `.gitignore` file so `goreleaser` will run, as it does not tolerate dirty git repositories.
 
-The TAG is passed along in line 1 of `vRELEAES.md`
+The TAG is passed along in line 1 of `vRELEASE.md`
 
