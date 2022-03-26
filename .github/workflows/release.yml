@@ -23,6 +23,7 @@ jobs:
         name: Set RELEASE_TAG env
         run: |
           echo RELEASE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev ) >> ${GITHUB_ENV}
+          RELEASE_TAG=$(echo ${GITHUB_REF} | rev | cut -d'/' -f 1 | rev)
           echo "Move ./changelog/v0.0.0-NEXT.md to ./changelog/${RELEASE_TAG}.md"
           sed -i "s/^## v0.0.0-NEXT$/## ${RELEASE_TAG}/" ./changelog/v0.0.0-NEXT.md
           cat ./changelog/v0.0.0-NEXT.md         
