@@ -65,14 +65,15 @@ jobs:
       -
         name: Place ChangeLog
         run: |
+          RELEASE_TAG=$(cat ./vRELEASE.md | head -n 1 | awk '{print $2}')
           echo "COPY ./vRELEASE.md to ./changelog/${RELEASE_TAG}.md"
           cp ./vRELEASE.md ./changelog/${RELEASE_TAG}.md
-          rm ./changelog/v0.0.0-NEXT.md
       -
         name: Commit ChangeLog
-        uses: EndBug/add-and-commit@v7
+        uses: EndBug/add-and-commit@v9
         with:
-          add: "['changelog/v0.0.0-NEXT.md', 'changelog/${RELEASE_TAG}.md']"
+          add: "changelog/${RELEASE_TAG}.md"
+          remove: "changelog/v0.0.0-NEXT.md"
           committer_name: Christopher Maahs
           committer_email: cmaahs@gmail.com
           message: "Update Release ${RELEASE_TAG}.md changelog"
