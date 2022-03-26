@@ -49,6 +49,7 @@ jobs:
           MAAHSOME_PAT: ${{ secrets.MAAHSOME_PAT }}
   changelog:
     runs-on: ubuntu-latest
+    needs: [goreleaser]
     steps:
       -
         name: Checkout
