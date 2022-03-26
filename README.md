@@ -4,5 +4,5 @@ Bitwarden Client Access - A REST API Client for Accessing Data from bw in serve 
 
 
 ```bash
-brew install maahsome/bwca --formula
+brew install maahsome/tap/bwca --formula
 ```
