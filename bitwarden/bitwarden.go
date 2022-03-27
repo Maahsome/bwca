@@ -18,6 +18,8 @@ type BitwardenClient interface {
 	GetTOTP(itemID string) (string, error)
 	NewItem(newlogin Newlogin) (ReturnStatus, error)
 	DeleteItem(itemID string) (bool, error)
+	GetFolders() (Folders, error)
+	GetFolder(folderID string) (Folder, error)
 }
 
 type bitwardenClient struct {
@@ -101,14 +103,14 @@ func (r *bitwardenClient) GetItem(itemID string) (Item, error) {
 		return Item{}, resperr
 	}
 
-	var items Item
-	marshErr := json.Unmarshal(resp.Body(), &items)
+	var item Item
+	marshErr := json.Unmarshal(resp.Body(), &item)
 	if marshErr != nil {
 		logrus.Fatal("Cannot marshall Pipeline", marshErr)
 		return Item{}, resperr
 	}
 
-	return items, nil
+	return item, nil
 
 }
 
@@ -235,4 +237,51 @@ func (r *bitwardenClient) DeleteItem(itemID string) (bool, error) {
 	}
 
 	return success.Success, nil
+}
+
+func (r *bitwardenClient) GetFolders() (Folders, error) {
+
+	// TODO: detect if there are no options passed in, ? verus & for page option
+	fetchUri := fmt.Sprintf("http://localhost:%s/list/object/folders", r.Port)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		Get(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return Folders{}, resperr
+	}
+	var folders Folders
+	marshErr := json.Unmarshal(resp.Body(), &folders)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return Folders{}, resperr
+	}
+
+	return folders, nil
+
+}
+
+func (r *bitwardenClient) GetFolder(folderID string) (Folder, error) {
+
+	// TODO: detect if there are no options passed in, ? verus & for page option
+	fetchUri := fmt.Sprintf("http://localhost:%s/object/folder/%s", r.Port, folderID)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		Get(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return Folder{}, resperr
+	}
+
+	var folder Folder
+	marshErr := json.Unmarshal(resp.Body(), &folder)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return Folder{}, resperr
+	}
+
+	return folder, nil
+
 }

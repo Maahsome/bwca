@@ -191,6 +191,33 @@ type Success struct {
 	Success bool `json:"success"`
 }
 
+type Folders struct {
+	Data    FoldersData `json:"data"`
+	Success bool        `json:"success"`
+}
+
+type FoldersData struct {
+	Data   []FoldersDataDatum `json:"data"`
+	Object string             `json:"object"`
+}
+
+type FoldersDataDatum struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Object string `json:"object"`
+}
+
+type Folder struct {
+	Data    FolderData `json:"data"`
+	Success bool       `json:"success"`
+}
+
+type FolderData struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Object string `json:"object"`
+}
+
 // ToJSON - Write the output as JSON
 func (it *Items) ToJSON() string {
 	itJSON, err := json.MarshalIndent(it, "", "  ")
@@ -326,6 +353,76 @@ func (it *Item) ToTEXT(noHeaders bool) string {
 	}
 	table.Append(row)
 	// }
+
+	table.Render()
+
+	return buf.String()
+
+}
+
+// ToJSON - Write the output as JSON
+func (fl *Folders) ToJSON() string {
+	flJSON, err := json.MarshalIndent(fl, "", "  ")
+	if err != nil {
+		logrus.WithError(err).Error("Error extracting JSON")
+		return ""
+	}
+	return string(flJSON[:])
+}
+
+func (fl *Folders) ToGRON() string {
+	itJSON, err := json.MarshalIndent(fl, "", "  ")
+	if err != nil {
+		logrus.WithError(err).Error("Error extracting JSON for GRON")
+	}
+	subReader := strings.NewReader(string(itJSON[:]))
+	subValues := &bytes.Buffer{}
+	ges := gron.NewGron(subReader, subValues)
+	ges.SetMonochrome(false)
+	if serr := ges.ToGron(); serr != nil {
+		logrus.WithError(serr).Error("Problem generating GRON syntax")
+		return ""
+	}
+	return string(subValues.Bytes())
+}
+
+func (fl *Folders) ToYAML() string {
+	itYAML, err := yaml.Marshal(fl)
+	if err != nil {
+		logrus.WithError(err).Error("Error extracting YAML")
+		return ""
+	}
+	return string(itYAML[:])
+}
+
+func (fl *Folders) ToTEXT(noHeaders bool) string {
+	buf, row := new(bytes.Buffer), make([]string, 0)
+
+	// ************************** TableWriter ******************************
+	table := tablewriter.NewWriter(buf)
+	if !noHeaders {
+		table.SetHeader([]string{"ID", "NAME"})
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	}
+
+	table.SetAutoWrapText(false)
+	table.SetAutoFormatHeaders(true)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetHeaderLine(false)
+	table.SetBorder(false)
+	table.SetTablePadding("\t") // pad with tabs
+	table.SetNoWhiteSpace(true)
+
+	for _, v := range *&fl.Data.Data {
+		row = []string{
+			v.ID,
+			v.Name,
+		}
+		table.Append(row)
+	}
 
 	table.Render()
 
