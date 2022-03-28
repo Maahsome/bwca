@@ -20,6 +20,8 @@ type BitwardenClient interface {
 	DeleteItem(itemID string) (bool, error)
 	GetFolders() (Folders, error)
 	GetFolder(folderID string) (Folder, error)
+	NewFolder(newfolder Newfolder) (ReturnStatus, error)
+	FindFolder(name string) (string, error)
 }
 
 type bitwardenClient struct {
@@ -284,4 +286,62 @@ func (r *bitwardenClient) GetFolder(folderID string) (Folder, error) {
 
 	return folder, nil
 
+}
+
+func (r *bitwardenClient) NewFolder(newfolder Newfolder) (ReturnStatus, error) {
+
+	newFolderJSON, merr := json.Marshal(newfolder)
+	if merr != nil {
+		logrus.WithError(merr).Error("Oops")
+		return ReturnStatus{}, merr
+	}
+
+	fmt.Println(string(newFolderJSON[:]))
+
+	fetchUri := fmt.Sprintf("http://localhost:%s/object/folder", r.Port)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(string(newFolderJSON[:])).
+		Post(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return ReturnStatus{}, resperr
+	}
+
+	var status ReturnStatus
+	marshErr := json.Unmarshal(resp.Body(), &status)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return ReturnStatus{}, resperr
+	}
+
+	return status, nil
+}
+
+func (r *bitwardenClient) FindFolder(name string) (string, error) {
+
+	fetchUri := fmt.Sprintf("http://localhost:%s/list/object/folders", r.Port)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		Get(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return "", resperr
+	}
+	var folders Folders
+	marshErr := json.Unmarshal(resp.Body(), &folders)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return "", resperr
+	}
+
+	for _, v := range folders.Data.Data {
+		if v.Name == name {
+			return v.ID, nil
+		}
+	}
+	return "", nil
 }
