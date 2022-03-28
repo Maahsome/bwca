@@ -218,6 +218,10 @@ type FolderData struct {
 	Object string `json:"object"`
 }
 
+type Newfolder struct {
+	Name string `json:"name"`
+}
+
 // ToJSON - Write the output as JSON
 func (it *Items) ToJSON() string {
 	itJSON, err := json.MarshalIndent(it, "", "  ")
@@ -423,6 +427,76 @@ func (fl *Folders) ToTEXT(noHeaders bool) string {
 		}
 		table.Append(row)
 	}
+
+	table.Render()
+
+	return buf.String()
+
+}
+
+// ToJSON - Write the output as JSON
+func (fl *Folder) ToJSON() string {
+	flJSON, err := json.MarshalIndent(fl, "", "  ")
+	if err != nil {
+		logrus.WithError(err).Error("Error extracting JSON")
+		return ""
+	}
+	return string(flJSON[:])
+}
+
+func (fl *Folder) ToGRON() string {
+	flJSON, err := json.MarshalIndent(fl, "", "  ")
+	if err != nil {
+		logrus.WithError(err).Error("Error extracting JSON for GRON")
+	}
+	subReader := strings.NewReader(string(flJSON[:]))
+	subValues := &bytes.Buffer{}
+	ges := gron.NewGron(subReader, subValues)
+	ges.SetMonochrome(false)
+	if serr := ges.ToGron(); serr != nil {
+		logrus.WithError(serr).Error("Problem generating GRON syntax")
+		return ""
+	}
+	return string(subValues.Bytes())
+}
+
+func (fl *Folder) ToYAML() string {
+	flYAML, err := yaml.Marshal(fl)
+	if err != nil {
+		logrus.WithError(err).Error("Error extracting YAML")
+		return ""
+	}
+	return string(flYAML[:])
+}
+
+func (fl *Folder) ToTEXT(noHeaders bool) string {
+	buf, row := new(bytes.Buffer), make([]string, 0)
+
+	// ************************** TableWriter ******************************
+	table := tablewriter.NewWriter(buf)
+	if !noHeaders {
+		table.SetHeader([]string{"ID", "NAME"})
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+	}
+
+	table.SetAutoWrapText(false)
+	table.SetAutoFormatHeaders(true)
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetHeaderLine(false)
+	table.SetBorder(false)
+	table.SetTablePadding("\t") // pad with tabs
+	table.SetNoWhiteSpace(true)
+
+	// for _, v := range *&fl.Data.Data {
+	row = []string{
+		fl.Data.ID,
+		fl.Data.Name,
+	}
+	table.Append(row)
+	// }
 
 	table.Render()
 
