@@ -31,13 +31,9 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "bwca",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "A cli tool to access bitwarden cli in 'serve' mode",
+	Long: `Bitwarden cli had added a 'serve' mode, and it makes accessing items
+much, much faster than accessing those items via the cli directly.`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		logFile, _ := cmd.Flags().GetString("log-file")
 		logLevel, _ := cmd.Flags().GetString("log-level")
@@ -93,6 +89,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&c.OutputFormat, "output", "o", "", "Set an output format: json, text, yaml, gron")
 	rootCmd.PersistentFlags().StringP("log-file", "l", "", "Specify a log file to log events to, default to no logging")
 	rootCmd.PersistentFlags().StringP("log-level", "v", "", "Specify a log level for logging, default to Warning (Trace, Debug, Info, Warning, Error, Fatal)")
+	rootCmd.PersistentFlags().BoolVar(&c.NoHeaders, "no-headers", false, "Suppress header output in Text output")
 }
 
 func initConfig() {

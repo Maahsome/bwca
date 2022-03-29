@@ -220,7 +220,7 @@ func (r *bitwardenClient) NewItem(newlogin Newlogin) (ReturnStatus, error) {
 		return ReturnStatus{}, merr
 	}
 
-	fmt.Println(string(newLoginJSON[:]))
+	// fmt.Println(string(newLoginJSON[:]))
 
 	fetchUri := fmt.Sprintf("http://localhost:%s/object/item", r.Port)
 	// logrus.Warn(fetchUri)
@@ -320,7 +320,7 @@ func (r *bitwardenClient) NewFolder(newfolder Newfolder) (ReturnStatus, error) {
 		return ReturnStatus{}, merr
 	}
 
-	fmt.Println(string(newFolderJSON[:]))
+	// fmt.Println(string(newFolderJSON[:]))
 
 	fetchUri := fmt.Sprintf("http://localhost:%s/object/folder", r.Port)
 	// logrus.Warn(fetchUri)

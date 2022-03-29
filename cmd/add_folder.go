@@ -11,13 +11,12 @@ import (
 // addFolderCmd represents the folder command
 var addFolderCmd = &cobra.Command{
 	Use:   "folder",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Add a new folder to the bitwarden vault",
+	Long: `EXAMPLE:
+  > bwca add folder --name bwca-new-folder
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Folder has been created
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 
@@ -37,7 +36,7 @@ func addFolder(name string) {
 	}
 
 	if status.Success {
-		fmt.Println("Item has been created")
+		fmt.Println("Folder has been created")
 	}
 
 }

@@ -11,13 +11,36 @@ import (
 // addItemCmd represents the item command
 var addItemCmd = &cobra.Command{
 	Use:   "item",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Add a new item to the bitwarden vault",
+	Long: `EXAMPLE:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Create a new bitwarden login item and add it to the favorites list.
+
+  > bwca add item --name bwca-birch \
+    --message "This goes into the NOTE field" \
+    --username "bwca-user" \
+    --password "bwca-password" \
+    --favorite
+
+--------OUTPUT--------
+Item has been created
+----------------------
+
+	NOTE: use techinques to hide your password from your shell history file
+
+EXAMPLE:
+
+Create a new bitwarden login item and assign it to a specified folder. (TODO)
+
+  > bwca add item --name bwca-birch \
+    --folder-id <folder_id> \
+	--username "bwca-user" \
+	--password "bwca-password"
+
+--------OUTPUT--------
+Item has been created
+----------------------
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		name, _ := cmd.Flags().GetString("name")
 		message, _ := cmd.Flags().GetString("message")

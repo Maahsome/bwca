@@ -12,13 +12,41 @@ import (
 // getFolderCmd represents the folder command
 var getFolderCmd = &cobra.Command{
 	Use:   "folder",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Get a folder from the bitwarden vault",
+	Long: `EXAMPLE:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Get a single folder from the bitwarden vault by name
+
+  > bwca get folder --folder-name bwca-folder
+
+--------OUTPUT--------
+{
+	"data": {
+	  "id": "8628259a-2323-4454-9826-ae6700f42a62",
+	  "name": "bwca-folder",
+	  "object": "folder"
+	},
+	"success": true
+  }
+----------------------
+
+EXAMPLE:
+
+Get a single folder from the bitwarden vault by ID
+
+  > bwca get folder --folder-id 8628259a-2323-4454-9826-ae6700f42a62
+
+--------OUTPUT--------
+{
+	"data": {
+	  "id": "8628259a-2323-4454-9826-ae6700f42a62",
+	  "name": "bwca-folder",
+	  "object": "folder"
+	},
+	"success": true
+  }
+----------------------
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		folderID, _ := cmd.Flags().GetString("folder-id")
 		folderName, _ := cmd.Flags().GetString("folder-name")

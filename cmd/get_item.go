@@ -12,13 +12,71 @@ import (
 // getItemCmd represents the item command
 var getItemCmd = &cobra.Command{
 	Use:   "item",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Get a single item from the bitwarden vault",
+	Long: `EXAMPLE:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Get a bitwarden login item from the bitwarden vault by item name
+
+  > bwca get item --item-name bwca-birch
+
+--------OUTPUT--------
+{
+	"data": {
+	  "collectionIds": null,
+	  "deletedDate": null,
+	  "favorite": false,
+	  "folderId": "",
+	  "id": "24c8a7e0-95d4-4abf-bf1b-ae6700fd6ffd",
+	  "login": {
+		"password": "bwca-password",
+		"passwordRevisionDate": "",
+		"totp": "",
+		"username": "bwca-user"
+	  },
+	  "name": "bwca-birch",
+	  "notes": null,
+	  "object": "item",
+	  "organizationId": null,
+	  "passwordHistory": null,
+	  "reprompt": 0,
+	  "revisionDate": "2022-03-29T15:22:44.243Z",
+	  "type": 1
+	},
+	"success": true
+  }
+----------------------
+
+Get a bitwarden login item from the bitwarden vault by item ID
+
+  > bwca get item --item-id 24c8a7e0-95d4-4abf-bf1b-ae6700fd6ffd
+
+--------OUTPUT--------
+{
+	"data": {
+	  "collectionIds": null,
+	  "deletedDate": null,
+	  "favorite": false,
+	  "folderId": "",
+	  "id": "24c8a7e0-95d4-4abf-bf1b-ae6700fd6ffd",
+	  "login": {
+		"password": "bwca-password",
+		"passwordRevisionDate": "",
+		"totp": "",
+		"username": "bwca-user"
+	  },
+	  "name": "bwca-birch",
+	  "notes": null,
+	  "object": "item",
+	  "organizationId": null,
+	  "passwordHistory": null,
+	  "reprompt": 0,
+	  "revisionDate": "2022-03-29T15:22:44.243Z",
+	  "type": 1
+	},
+	"success": true
+  }
+----------------------
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		itemID, _ := cmd.Flags().GetString("item-id")
 		itemName, _ := cmd.Flags().GetString("item-name")

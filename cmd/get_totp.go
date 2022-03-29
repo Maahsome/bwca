@@ -10,13 +10,17 @@ import (
 // getTotpCmd represents the password command
 var getTotpCmd = &cobra.Command{
 	Use:   "totp",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Get the TOTP from a login item in the bitwarden vault",
+	Long: `EXAMPLE:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Get just the calculated TOTP for a login item in the bitwarden vault
+
+  > bwca get totp --item-name bwca-birch
+
+--------OUTPUT--------
+714091
+----------------------
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		itemID, _ := cmd.Flags().GetString("item-id")
 		itemName, _ := cmd.Flags().GetString("item-name")

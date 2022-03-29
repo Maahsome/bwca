@@ -6,14 +6,13 @@ import (
 
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
-	Use:   "delete",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:     "delete",
+	Aliases: []string{"remove"},
+	Short:   "Delete objects from the bitwarden vault",
+	Long: `Delete various objects from the bitwarden vault:
+  - item
+  - folder
+`,
 }
 
 func init() {
