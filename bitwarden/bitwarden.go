@@ -14,6 +14,7 @@ type BitwardenClient interface {
 	GetItems(folder string) (Items, error)
 	GetItem(itemID string) (Item, error)
 	FindItem(name string) (string, error)
+	GetUsername(itemID string) (string, error)
 	GetPassword(itemID string) (string, error)
 	GetTOTP(itemID string) (string, error)
 	NewItem(newlogin Newlogin) (ReturnStatus, error)
@@ -140,6 +141,29 @@ func (r *bitwardenClient) FindItem(name string) (string, error) {
 		}
 	}
 	return "", nil
+}
+
+func (r *bitwardenClient) GetUsername(itemID string) (string, error) {
+
+	// TODO: detect if there are no options passed in, ? verus & for page option
+	fetchUri := fmt.Sprintf("http://localhost:%s/object/username/%s", r.Port, itemID)
+	// logrus.Warn(fetchUri)
+	resp, resperr := r.Client.R().
+		Get(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return "", resperr
+	}
+
+	var pw Password
+	marshErr := json.Unmarshal(resp.Body(), &pw)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return "", resperr
+	}
+
+	return pw.Data.Data, nil
 }
 
 func (r *bitwardenClient) GetPassword(itemID string) (string, error) {
