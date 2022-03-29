@@ -12,13 +12,30 @@ import (
 // getFoldersCmd represents the folders command
 var getFoldersCmd = &cobra.Command{
 	Use:   "folders",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Get a list of folders from the bitwarden vault",
+	Long: `EXAMPLE:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Get a list of folders.
+
+  > bwca get folders
+
+--------OUTPUT--------
+ID                                  	NAME
+8628259a-2323-4454-9826-ae6700f42a62	bwca-folder
+ebd916e7-cfad-46d1-94da-ae6600322aa2	bwca-paddle
+9b32e7b4-1450-476f-9b10-ae660021e5c4	bwca-portage
+----------------------
+
+Get a list of folders and suppress the header row
+
+  > bwca get folders --no-headers
+
+--------OUTPUT--------
+8628259a-2323-4454-9826-ae6700f42a62	bwca-folder
+ebd916e7-cfad-46d1-94da-ae6600322aa2	bwca-paddle
+9b32e7b4-1450-476f-9b10-ae660021e5c4	bwca-portage
+----------------------
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		getFolders()
 	},

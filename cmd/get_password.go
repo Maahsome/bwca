@@ -10,13 +10,17 @@ import (
 // getPasswordCmd represents the password command
 var getPasswordCmd = &cobra.Command{
 	Use:   "password",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Get a login password from the bitwarden vault",
+	Long: `EXAMPLE:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Fetch just the password property from a login object in the bitwarden vault
+
+  > bwca get password --item-name bwca-birch
+
+--------OUTPUT--------
+bwca-password
+----------------------
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		itemID, _ := cmd.Flags().GetString("item-id")
 		itemName, _ := cmd.Flags().GetString("item-name")
