@@ -47,17 +47,31 @@ Item has been created
 		favorite, _ := cmd.Flags().GetBool("favorite")
 		username, _ := cmd.Flags().GetString("username")
 		password, _ := cmd.Flags().GetString("password")
-		addItem(name, message, favorite, username, password)
+		folderID, _ := cmd.Flags().GetString("folder-id")
+		folder, _ := cmd.Flags().GetString("folder")
+		if len(folderID) > 0 || len(folder) > 0 {
+			if len(folder) > 0 {
+				folderID = getFolderID(folder)
+			}
+			if len(folderID) > 0 {
+				addItem(name, message, favorite, username, password, folderID)
+			} else {
+				common.Logger.Error("The folder name was not found")
+			}
+		} else {
+			addItem(name, message, favorite, username, password, folderID)
+		}
 	},
 }
 
-func addItem(name string, message string, favorite bool, username string, password string) {
+func addItem(name string, message string, favorite bool, username string, password string, folderID string) {
 
 	newItem := bitwarden.Newlogin{
 		Type:     1,
 		Name:     name,
 		Notes:    message,
 		Favorite: favorite,
+		FolderID: folderID,
 		Login: bitwarden.NewloginLogin{
 			Username: username,
 			Password: password,
@@ -81,9 +95,11 @@ func init() {
 
 	addItemCmd.Flags().StringP("name", "n", "", "Name of the new item, use easy unique names, like a gitlab slug")
 	addItemCmd.Flags().StringP("message", "m", "", "Note/Message to add to the item")
-	addItemCmd.Flags().BoolP("favorite", "f", false, "Add this item to the list of favorites")
+	addItemCmd.Flags().Bool("favorite", false, "Add this item to the list of favorites")
 	addItemCmd.Flags().StringP("username", "u", "", "Username of the item")
 	addItemCmd.Flags().StringP("password", "p", "", "Password of the item")
+	addItemCmd.Flags().String("folder-id", "", "Store the item in the specified folder id")
+	addItemCmd.Flags().StringP("folder", "f", "", "Store the item in the specified folder name, name must be unique")
 
 	addItemCmd.MarkFlagRequired("name")
 	addItemCmd.MarkFlagRequired("username")
