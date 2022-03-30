@@ -56,19 +56,28 @@ Replace the nodes content
 		replaceMessage, _ := cmd.Flags().GetBool("replace-message")
 		username, _ := cmd.Flags().GetString("username")
 		password, _ := cmd.Flags().GetString("password")
-
+		folderID, _ := cmd.Flags().GetString("folder-id")
+		folder, _ := cmd.Flags().GetString("folder")
+		if len(folderID) > 0 || len(folder) > 0 {
+			if len(folder) > 0 {
+				folderID = getFolderID(folder)
+			}
+			if len(folderID) == 0 {
+				common.Logger.Fatal("The folder name was not found, cannot proceed")
+			}
+		}
 		if len(itemName) > 0 {
 			itemID = getItemID(itemName)
 		}
 		if len(itemID) > 0 {
-			updateItem(itemID, message, favorite, replaceMessage, username, password)
+			updateItem(itemID, message, favorite, replaceMessage, username, password, folderID)
 		} else {
 			common.Logger.Error("You must specify --item-id or --item-name")
 		}
 	},
 }
 
-func updateItem(id string, message string, favorite bool, replaceMessage bool, username string, password string) {
+func updateItem(id string, message string, favorite bool, replaceMessage bool, username string, password string, folderID string) {
 
 	item, err := bwClient.GetItem(id)
 	if err != nil {
@@ -91,6 +100,9 @@ func updateItem(id string, message string, favorite bool, replaceMessage bool, u
 	}
 	if len(password) > 0 {
 		item.Data.Login.Password = password
+	}
+	if len(folderID) > 0 {
+		item.Data.FolderID = folderID
 	}
 	if favorite {
 		item.Data.Favorite = favorite
@@ -115,8 +127,10 @@ func init() {
 	updateItemCmd.Flags().StringP("item-id", "i", "", "Object ID of the login item to update")
 	updateItemCmd.Flags().StringP("item-name", "n", "", "Name of the login item to update")
 	updateItemCmd.Flags().StringP("message", "m", "", "Note/Message to append/replace")
-	updateItemCmd.Flags().BoolP("favorite", "f", false, "Add this item to the list of favorites")
+	updateItemCmd.Flags().Bool("favorite", false, "Add this item to the list of favorites")
 	updateItemCmd.Flags().BoolP("replace-message", "r", false, "Add this item to the list of favorites")
 	updateItemCmd.Flags().StringP("username", "u", "", "Username of the item")
 	updateItemCmd.Flags().StringP("password", "p", "", "Password of the item")
+	updateItemCmd.Flags().String("folder-id", "", "Store the item in the specified folder id")
+	updateItemCmd.Flags().StringP("folder", "f", "", "Store the item in the specified folder name, name must be unique")
 }
