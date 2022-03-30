@@ -222,6 +222,18 @@ type Newfolder struct {
 	Name string `json:"name"`
 }
 
+type SyncReturn struct {
+	Data    SyncReturnData `json:"data"`
+	Success bool           `json:"success"`
+}
+
+type SyncReturnData struct {
+	Message interface{} `json:"message"`
+	NoColor bool        `json:"noColor"`
+	Object  string      `json:"object"`
+	Title   string      `json:"title"`
+}
+
 // ToJSON - Write the output as JSON
 func (it *Items) ToJSON() string {
 	itJSON, err := json.MarshalIndent(it, "", "  ")
