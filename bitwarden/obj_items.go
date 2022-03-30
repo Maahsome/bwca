@@ -114,7 +114,7 @@ type ItemData struct {
 	ID              string                    `json:"id"`
 	Login           ItemDataLogin             `json:"login"`
 	Name            string                    `json:"name"`
-	Notes           interface{}               `json:"notes"`
+	Notes           string                    `json:"notes"`
 	Object          string                    `json:"object"`
 	OrganizationID  interface{}               `json:"organizationId"`
 	PasswordHistory []ItemDataPasswordHistory `json:"passwordHistory"`
