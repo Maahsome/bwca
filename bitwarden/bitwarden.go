@@ -24,6 +24,7 @@ type BitwardenClient interface {
 	GetFolder(folderID string) (Folder, error)
 	NewFolder(newfolder Newfolder) (ReturnStatus, error)
 	FindFolder(name string) (string, error)
+	Sync() (SyncReturn, error)
 }
 
 type bitwardenClient struct {
@@ -399,4 +400,26 @@ func (r *bitwardenClient) FindFolder(name string) (string, error) {
 		}
 	}
 	return "", nil
+}
+
+func (r *bitwardenClient) Sync() (SyncReturn, error) {
+
+	fetchUri := fmt.Sprintf("http://localhost:%s/sync", r.Port)
+	resp, resperr := r.Client.R().
+		SetHeader("Content-Type", "application/json").
+		Post(fetchUri)
+
+	if resperr != nil {
+		logrus.WithError(resperr).Error("Oops")
+		return SyncReturn{}, resperr
+	}
+
+	var status SyncReturn
+	marshErr := json.Unmarshal(resp.Body(), &status)
+	if marshErr != nil {
+		logrus.Fatal("Cannot marshall Pipeline", marshErr)
+		return SyncReturn{}, resperr
+	}
+
+	return status, nil
 }
